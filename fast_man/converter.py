@@ -84,15 +84,17 @@ def main() -> None:
     """
     import argparse
     parser = argparse.ArgumentParser(description='Generate Postman collection from FastAPI app.')
-    parser.add_argument('--app', required=True, help='Path to FastAPI app instance')
-    parser.add_argument('--output', default='output.json', help='Output file name')
+    parser.add_argument('--app', required=True, help='Path to the FastAPI app')
+    parser.add_argument('--output', default='postman_collection.json', help='Output file for the Postman collection')
     parser.add_argument('--name', default='API Collection', help='Name of the Postman collection')
     parser.add_argument('--host', default='http://localhost', help='Host URL for the API')
+
     args = parser.parse_args()
 
     try:
-        app_module = __import__(args.app)
-        app = getattr(app_module, 'app')
+        app_module, app_var = args.app.rsplit('.', 1)
+        app = getattr(__import__(app_module, fromlist=[app_var]), app_var)
+
         generate_postman_collection(app, args.output, args.name, args.host)
     except Exception as e:
         logger.error(f"Error importing FastAPI app from {args.app}: {e}")

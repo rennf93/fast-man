@@ -212,7 +212,6 @@ def test_generate_postman_collection(app, client):
         }
     }
 
-    # Test the endpoints using TestClient
     response = client.get("/items/1", headers={"user_agent": "test-agent"}, params={"q": "test-query"})
     assert response.status_code == 200
     assert response.json() == {"id": 1, "name": "Item name", "description": "Item description"}
@@ -261,7 +260,6 @@ def test_generate_postman_collection_with_auth(app, client):
         }
     ], key=lambda x: x["name"])
 
-    # Test the endpoints using TestClient
     response = client.get("/items/1", headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 200
     assert response.json() == {"id": 1, "name": "Item name", "description": "Item description"}
