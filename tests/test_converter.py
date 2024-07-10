@@ -1,6 +1,6 @@
 import json
 import pytest
-from fastapi import FastAPI, Header, Query, status, Body, Request
+from fastapi import FastAPI, Header, Query, status, Body, HTTPException
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
 from fast_man.converter import generate_postman_collection
@@ -18,6 +18,10 @@ class ResponseItem(BaseModel):
     id: int
 
 
+class ErrorResponse(BaseModel):
+    detail: str
+
+
 
 @pytest.fixture
 def app():
@@ -27,26 +31,52 @@ def app():
         "/items/{item_id}",
         summary="Get an item",
         response_model=ResponseItem,
-        status_code=status.HTTP_200_OK
+        status_code=status.HTTP_200_OK,
+        responses={
+            200: {
+                "description": "Successful Response",
+                "model": ResponseItem
+            },
+            404: {
+                "description": "Item not found",
+                "model": ErrorResponse
+            }
+        }
     )
     async def read_item(
         item_id: int,
         q: str = Query(None, description="Query string for the item"),
         user_agent: str = Header(None, description="User-Agent header")
     ):
-        return {"id": item_id, "name": "Item name", "description": "Item description"}
+        if item_id == 1:
+            return {"id": item_id, "name": "Item name", "description": "Item description"}
+        raise HTTPException(status_code=404, detail="Item not found")
 
     @app.post(
         "/items/",
         summary="Create an item",
         response_model=ResponseItem,
-        status_code=status.HTTP_201_CREATED
+        status_code=status.HTTP_201_CREATED,
+        responses={
+            201: {
+                "description": "Successful Response",
+                "model": ResponseItem
+            },
+            401: {
+                "description": "Unauthorized",
+                "model": ErrorResponse
+            }
+        }
     )
     async def create_item(
-        # request: Request,
         item: Item = Body(..., examples={"default": {"summary": "An example item", "value": {"name": "Example item", "description": "Example description"}}}),
-        token: str = Header(None, description="Authorization token")
+        authorization: str = Header(None, description="Authorization token")
     ):
+        if authorization != "Bearer test-token":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Unauthorized"
+            )
         return {"id": 1, **item.model_dump()}
 
     return app
@@ -78,7 +108,7 @@ def test_generate_postman_collection(app, client):
     assert get_item["request"]["description"] == "Get an item"
     assert get_item["request"]["header"] == [{"key": "user_agent", "value": "{{user_agent}}"}]
     assert get_item["request"]["body"]["mode"] == "raw"
-    assert json.loads(get_item["request"]["body"]["raw"]) == {}
+    assert get_item["request"]["body"]["raw"] == {}
     assert sorted(get_item["request"]["params"], key=lambda x: x["name"]) == sorted([
         {"name": "item_id", "in": "path", "required": True, "schema": {}},
         {"name": "q", "in": "query", "required": False, "schema": {}}
@@ -100,6 +130,21 @@ def test_generate_postman_collection(app, client):
                     }
                 }
             }
+        },
+        "404": {
+            "description": "Item not found",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "detail": {"title": "Detail", "type": "string"}
+                        },
+                        "required": ["detail"],
+                        "title": "ErrorResponse"
+                    }
+                }
+            }
         }
     }
 
@@ -108,9 +153,9 @@ def test_generate_postman_collection(app, client):
     assert create_item["request"]["url"] == "http://testserver/items/"
     assert create_item["request"]["method"] == "POST"
     assert create_item["request"]["description"] == "Create an item"
-    assert create_item["request"]["header"] == [{"key": "token", "value": "{{token}}"}]
+    assert create_item["request"]["header"] == [{"key": "authorization", "value": "{{authorization}}"}]
     assert create_item["request"]["body"]["mode"] == "raw"
-    assert json.loads(create_item["request"]["body"]["raw"]) == {"name": "Example item", "description": "Example description"}
+    assert create_item["request"]["body"]["raw"] == {"name": "Example item", "description": "Example description"}
     assert create_item["request"]["params"] == []
     assert create_item["request"]["responses"] == {
         "201": {
@@ -129,15 +174,30 @@ def test_generate_postman_collection(app, client):
                     }
                 }
             }
+        },
+        "401": {
+            "description": "Unauthorized",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "detail": {"title": "Detail", "type": "string"}
+                        },
+                        "required": ["detail"],
+                        "title": "ErrorResponse"
+                    }
+                }
+            }
         }
     }
 
     # Test the endpoints using TestClient
-    response = client.get("/items/1", headers={"user-agent": "test-agent"}, params={"q": "test-query"})
+    response = client.get("/items/1", headers={"user_agent": "test-agent"}, params={"q": "test-query"})
     assert response.status_code == 200
     assert response.json() == {"id": 1, "name": "Item name", "description": "Item description"}
 
-    response = client.post("/items/", json={"name": "test", "description": "test description"})
+    response = client.post("/items/", json={"name": "test", "description": "test description"}, headers={"authorization": "Bearer test-token"})
     assert response.status_code == 201
     assert response.json() == {"id": 1, "name": "test", "description": "test description"}
 

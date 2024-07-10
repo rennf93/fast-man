@@ -58,7 +58,7 @@ def generate_postman_collection(
                         "header": get_headers(route),
                         "body": {
                             "mode": "raw",
-                            "raw": json.dumps(get_request_body_example(route), indent=4)
+                            "raw": get_request_body_example(route)
                         },
                         "params": get_parameters(route),
                         "responses": get_responses(route)

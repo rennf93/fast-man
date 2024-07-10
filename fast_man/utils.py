@@ -5,7 +5,6 @@ from typing import List, Dict, Any
 from pydantic import BaseModel
 import logging
 import traceback
-import json
 
 
 
@@ -118,29 +117,32 @@ def get_responses(route: APIRoute) -> Dict[str, Dict[str, Any]]:
     """
     try:
         responses = {}
-        for status_code, response in route.responses.items():
-            if isinstance(response, dict):
-                responses[str(status_code)] = {
-                    "description": response.get("description", ""),
-                    "content": {
-                        "application/json": {
-                            "schema": response.get("model_json_schema", {})
+        if route.responses:
+            for status_code, response in route.responses.items():
+                if isinstance(response, dict):
+                    content = response.get('content', {}).get('application/json', {}).get('schema', {})
+                    if not content and 'model' in response:
+                        content = response['model'].model_json_schema()
+                    responses[str(status_code)] = {
+                        "description": response.get('description', ''),
+                        "content": {
+                            "application/json": {
+                                "schema": content
+                            }
                         }
                     }
-                }
-            elif isinstance(response, BaseModel):
-                responses[str(status_code)] = {
-                    "description": response.__doc__,
-                    "content": {
-                        "application/json": {
-                            "schema": response.model_json_schema()
+                elif isinstance(response, BaseModel):
+                    responses[str(status_code)] = {
+                        "description": response.__doc__,
+                        "content": {
+                            "application/json": {
+                                "schema": response.model_json_schema()
+                            }
                         }
                     }
-                }
-        if route.response_model:
+        elif route.response_model:
             responses[str(route.status_code)] = {
-                "description": "Successful Response",
-                # "description": route.response_model.__doc__,
+                "description": route.response_model.__doc__,
                 "content": {
                     "application/json": {
                         "schema": route.response_model.model_json_schema()
