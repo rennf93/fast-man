@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def generate_postman_collection(
     app: FastAPI,
-    output_file: str = 'output.json',
+    output_file: str = 'postman_collection.json',
     input_name: str = 'API Collection',
     input_host: str = 'http://localhost'
 ) -> None:
@@ -54,7 +54,6 @@ def generate_postman_collection(
                     "request": {
                         "url": f"{input_host}{route.path}",
                         "method": route.methods.pop(),
-                        # "method": list(route.methods)[0],
                         "description": route.summary or "",
                         "header": get_headers(route),
                         "body": {
@@ -67,7 +66,7 @@ def generate_postman_collection(
                 }
                 collection["item"].append(item)
             except Exception as e:
-                logger.error(f"Error processing route {route.name}: {e}")
+                logger.error(f"Error processing route {route}: {e}")
 
     try:
         with open(output_file, 'w') as f:
