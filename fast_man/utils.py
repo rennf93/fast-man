@@ -89,14 +89,24 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                 "name": param.name,
                 "in": "query",
                 "required": param.required,
-                "schema": param.field_info.json_schema_extra if param.field_info else {}
+                "schema": {
+                    "type": param.type_.__name__ if hasattr(param.type_, '__name__') else str(param.type_),
+                    "description": param.field_info.description if param.field_info.description else "",
+                    "default": param.default if param.default is not None else "",
+                    "example": param.field_info.extra.get("example", "") if hasattr(param.field_info, 'extra') else ""
+                }
             })
         for param in route.dependant.path_params:
             parameters.append({
                 "name": param.name,
                 "in": "path",
                 "required": True,
-                "schema": param.field_info.json_schema_extra if param.field_info else {}
+                "schema": {
+                    "type": param.type_.__name__ if hasattr(param.type_, '__name__') else str(param.type_),
+                    "description": param.field_info.description if param.field_info.description else "",
+                    "default": param.default if param.default is not None else "",
+                    "example": param.field_info.extra.get("example", "") if hasattr(param.field_info, 'extra') else ""
+                }
             })
         return parameters
     except Exception as e:

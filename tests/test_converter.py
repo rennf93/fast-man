@@ -110,8 +110,28 @@ def test_generate_postman_collection(app, client):
     assert get_item["request"]["body"]["mode"] == "raw"
     assert get_item["request"]["body"]["raw"] == {}
     assert sorted(get_item["request"]["params"], key=lambda x: x["name"]) == sorted([
-        {"name": "item_id", "in": "path", "required": True, "schema": {}},
-        {"name": "q", "in": "query", "required": False, "schema": {}}
+        {
+            "name": "item_id",
+            "in": "path",
+            "required": True,
+            "schema": {
+                "type": "int",
+                "description": "",
+                "default": None,
+                "example": ""
+            }
+        },
+        {
+            "name": "q",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "str",
+                "description": "Query string for the item",
+                "default": "",
+                "example": ""
+            }
+        }
     ], key=lambda x: x["name"])
     assert get_item["request"]["responses"] == {
         "200": {
@@ -214,6 +234,32 @@ def test_generate_postman_collection_with_auth(app, client):
     assert collection["auth"]["bearer"][0]["key"] == "token"
     assert collection["auth"]["bearer"][0]["value"] == "{{access_token}}"
     assert collection["auth"]["bearer"][0]["type"] == "string"
+
+    get_item = collection["item"][0]
+    assert sorted(get_item["request"]["params"], key=lambda x: x["name"]) == sorted([
+        {
+            "name": "item_id",
+            "in": "path",
+            "required": True,
+            "schema": {
+                "type": "int",
+                "description": "",
+                "default": None,
+                "example": ""
+            }
+        },
+        {
+            "name": "q",
+            "in": "query",
+            "required": False,
+            "schema": {
+                "type": "str",
+                "description": "Query string for the item",
+                "default": "",
+                "example": ""
+            }
+        }
+    ], key=lambda x: x["name"])
 
     # Test the endpoints using TestClient
     response = client.get("/items/1", headers={"Authorization": "Bearer test-token"})

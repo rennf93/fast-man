@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from .utils import get_request_body_example, get_headers, get_parameters, get_responses
 from typing import Any, Dict
+from fastapi.encoders import jsonable_encoder
 
 
 
@@ -58,10 +59,10 @@ def generate_postman_collection(
                         "header": get_headers(route),
                         "body": {
                             "mode": "raw",
-                            "raw": get_request_body_example(route)
+                            "raw": jsonable_encoder(get_request_body_example(route))
                         },
-                        "params": get_parameters(route),
-                        "responses": get_responses(route)
+                        "params": jsonable_encoder(get_parameters(route)),
+                        "responses": jsonable_encoder(get_responses(route))
                     }
                 }
                 collection["item"].append(item)
