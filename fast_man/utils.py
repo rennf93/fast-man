@@ -151,11 +151,15 @@ def get_responses(route: APIRoute) -> Dict[str, Dict[str, Any]]:
                         }
                     }
         elif route.response_model:
+            if isinstance(route.response_model, list):
+                schema = [model.model_json_schema() for model in route.response_model]
+            else:
+                schema = route.response_model.model_json_schema()
             responses[str(route.status_code)] = {
                 "description": route.response_model.__doc__,
                 "content": {
                     "application/json": {
-                        "schema": route.response_model.model_json_schema()
+                        "schema": schema
                     }
                 }
             }

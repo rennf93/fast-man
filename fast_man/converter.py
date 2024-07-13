@@ -92,7 +92,7 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        app_module, app_var = args.app.rsplit('.', 1)
+        app_module, app_var = args.app.split(':')
         app = getattr(__import__(app_module, fromlist=[app_var]), app_var)
 
         generate_postman_collection(app, args.output, args.name, args.host)

@@ -28,7 +28,7 @@ def app():
     app = FastAPI()
 
     @app.get(
-        "/items/{item_id}",
+        path="/items/{item_id}",
         summary="Get an item",
         response_model=ResponseItem,
         status_code=status.HTTP_200_OK,
@@ -50,10 +50,13 @@ def app():
     ):
         if item_id == 1:
             return {"id": item_id, "name": "Item name", "description": "Item description"}
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item not found"
+        )
 
     @app.post(
-        "/items/",
+        path="/items/",
         summary="Create an item",
         response_model=ResponseItem,
         status_code=status.HTTP_201_CREATED,
