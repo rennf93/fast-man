@@ -15,6 +15,7 @@ from fastapi.encoders import jsonable_encoder
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def generate_postman_collection(
     app: FastAPI,
     output_file: str = 'postman_collection.json',
@@ -45,7 +46,10 @@ def generate_postman_collection(
     collection: Dict[str, Any] = {
         "info": {
             "name": input_name,
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+            "schema": (
+                "https://schema.getpostman.com/json/collection/v2.1.0/"
+                "collection.json"
+            ),
             "description": readme_content
         },
         "item": [],
@@ -75,15 +79,30 @@ def generate_postman_collection(
                         "header": get_headers(route),
                         "body": {
                             "mode": "raw",
-                            "raw": jsonable_encoder(get_request_body_example(route))
+                            "raw": jsonable_encoder(
+                                get_request_body_example(
+                                    route
+                                )
+                            )
                         },
-                        "params": jsonable_encoder(get_parameters(route)),
-                        "responses": jsonable_encoder(get_responses(route))
+                        "params": jsonable_encoder(
+                            get_parameters(
+                                route
+                            )
+                        ),
+                        "responses": jsonable_encoder(
+                            get_responses(
+                                route
+                            )
+                        )
                     }
                 }
                 for tag in route.tags:
                     if tag not in folders:
-                        folders[tag] = {"name": tag, "item": []}
+                        folders[tag] = {
+                            "name": tag,
+                            "item": []
+                        }
                     folders[tag]["item"].append(item)
             except Exception as e:
                 logger.error(
@@ -102,6 +121,7 @@ def generate_postman_collection(
         logger.error(
             f"Error saving Postman collection to {output_file}: {e}"
         )
+
 
 def main() -> None:
     """
@@ -150,6 +170,7 @@ def main() -> None:
         logger.error(
             f"Error importing FastAPI app from {args.app}: {e}"
         )
+
 
 if __name__ == '__main__':
     main()

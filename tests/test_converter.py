@@ -30,6 +30,7 @@ api_key_scheme = APIKeyHeader(
     name="X-API-Key"
 )
 
+
 # Models
 class Item(BaseModel):
     name: str = Field(
@@ -40,6 +41,7 @@ class Item(BaseModel):
         None,
         json_schema_extra="Item description"
     )
+
 
 class ResponseItem(BaseModel):
     name: str = Field(
@@ -55,11 +57,13 @@ class ResponseItem(BaseModel):
         json_schema_extra=1
     )
 
+
 class ErrorResponse(BaseModel):
     detail: str = Field(
         ...,
         json_schema_extra="Error detail"
     )
+
 
 class User(BaseModel):
     username: str = Field(
@@ -71,6 +75,7 @@ class User(BaseModel):
         json_schema_extra="john@example.com"
     )
 
+
 class Token(BaseModel):
     access_token: str = Field(
         ...,
@@ -81,11 +86,13 @@ class Token(BaseModel):
         json_schema_extra="bearer"
     )
 
+
 class SecureData(BaseModel):
     data: str = Field(
         ...,
         json_schema_extra="This is secure data"
     )
+
 
 # Dependencies
 def get_current_user(
@@ -99,6 +106,7 @@ def get_current_user(
         response_model=ErrorResponse
     )
 
+
 def get_api_key(
     api_key: str = Security(api_key_scheme)
 ) -> str:
@@ -109,6 +117,7 @@ def get_api_key(
         detail="Invalid API Key",
         response_model=ErrorResponse
     )
+
 
 @pytest.fixture
 def app():
@@ -288,9 +297,11 @@ def app():
 
     return app
 
+
 @pytest.fixture
 def client(app):
     return TestClient(app)
+
 
 def test_generate_postman_collection(app, client):
     output_file = "postman_collection.json"
@@ -304,7 +315,10 @@ def test_generate_postman_collection(app, client):
     with open(output_file) as f:
         collection = json.load(f)
 
-    schema = "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    schema = (
+        "https://schema.getpostman.com/json/collection/v2.1.0/"
+        "collection.json"
+    )
 
     assert collection["info"]["name"] == "Test API"
     assert collection["info"]["schema"] == schema
@@ -540,6 +554,7 @@ def test_generate_postman_collection(app, client):
         "name": "test",
         "description": "test description"
     }
+
 
 def test_generate_postman_collection_with_auth(
     app,
