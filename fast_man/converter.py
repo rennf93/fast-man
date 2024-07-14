@@ -11,7 +11,6 @@ from .utils import (
 from typing import Any, Dict
 from fastapi.encoders import jsonable_encoder
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -33,7 +32,6 @@ def generate_postman_collection(
         input_host (str): The host URL for the API.
         readme_file (str): The path to the README.md file for documentation.
     """
-    # Read the README.md file
     try:
         with open(readme_file, 'r') as f:
             readme_content = f.read()
