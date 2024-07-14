@@ -1,6 +1,6 @@
 # Fast-Man
 
-[![PyPI version](https://badge.fury.io/py/fast-man.svg)](https://badge.fury.io/py/fast-man)
+[![PyPI version](https://badge.fury.io/py/fast-man.svg?cache=none)](https://badge.fury.io/py/fast-man)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![CI](https://github.com/rennf93/fast-man/actions/workflows/ci.yml/badge.svg)](https://github.com/rennf93/fast-man/actions/workflows/ci.yml)
 [![Release](https://github.com/rennf93/fast-man/actions/workflows/release.yml/badge.svg)](https://github.com/rennf93/fast-man/actions/workflows/release.yml)
