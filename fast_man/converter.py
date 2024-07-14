@@ -47,6 +47,8 @@ def generate_postman_collection(
         }
     }
 
+    folders = {}
+
     for route in app.routes:
         if isinstance(route, APIRoute):
             try:
@@ -65,9 +67,14 @@ def generate_postman_collection(
                         "responses": jsonable_encoder(get_responses(route))
                     }
                 }
-                collection["item"].append(item)
+                for tag in route.tags:
+                    if tag not in folders:
+                        folders[tag] = {"name": tag, "item": []}
+                    folders[tag]["item"].append(item)
             except Exception as e:
                 logger.error(f"Error processing route {route}: {e}")
+
+    collection["item"] = list(folders.values())
 
     try:
         with open(output_file, 'w') as f:
