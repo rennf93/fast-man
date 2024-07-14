@@ -2,9 +2,9 @@
 
 [![PyPI version](https://badge.fury.io/py/fast-man.svg)](https://badge.fury.io/py/fast-man)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CI](https://github.com/yourusername/fast-man/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/fast-man/actions/workflows/ci.yml)
-[![Release](https://github.com/yourusername/fast-man/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/fast-man/actions/workflows/release.yml)
-[![CodeQL](https://github.com/yourusername/fast-man/actions/workflows/code-ql.yml/badge.svg)](https://github.com/yourusername/fast-man/actions/workflows/code-ql.yml)
+[![CI](https://github.com/rennf93/fast-man/actions/workflows/ci.yml/badge.svg)](https://github.com/rennf93/fast-man/actions/workflows/ci.yml)
+[![Release](https://github.com/rennf93/fast-man/actions/workflows/release.yml/badge.svg)](https://github.com/rennf93/fast-man/actions/workflows/release.yml)
+[![CodeQL](https://github.com/rennf93/fast-man/actions/workflows/code-ql.yml/badge.svg)](https://github.com/rennf93/fast-man/actions/workflows/code-ql.yml)
 
 Fast-Man is a project that aims to automate the creation of `postman_collection.json` for a FastAPI app. This tool simplifies the process of generating Postman collections, making it easier to test and document your FastAPI APIs.
 
