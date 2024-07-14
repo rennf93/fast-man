@@ -18,7 +18,8 @@ def generate_postman_collection(
     app: FastAPI,
     output_file: str = 'postman_collection.json',
     input_name: str = 'API Collection',
-    input_host: str = 'http://localhost'
+    input_host: str = 'http://localhost',
+    readme_file: str = 'README.md'
 ) -> None:
     """
     Generate a Postman collection from a FastAPI app.
@@ -28,11 +29,21 @@ def generate_postman_collection(
         output_file (str): The output file name for the Postman collection.
         input_name (str): The name of the Postman collection.
         input_host (str): The host URL for the API.
+        readme_file (str): The path to the README.md file for documentation.
     """
+    # Read the README.md file
+    try:
+        with open(readme_file, 'r') as f:
+            readme_content = f.read()
+    except Exception as e:
+        logger.error(f"Error reading README.md file: {e}")
+        readme_content = ""
+
     collection: Dict[str, Any] = {
         "info": {
             "name": input_name,
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+            "description": readme_content
         },
         "item": [],
         "auth": {
@@ -95,6 +106,7 @@ def main() -> None:
     parser.add_argument('--output', default='postman_collection.json', help='Output file for the Postman collection')
     parser.add_argument('--name', default='API Collection', help='Name of the Postman collection')
     parser.add_argument('--host', default='http://localhost', help='Host URL for the API')
+    parser.add_argument('--readme', default='README.md', help='Path to the README.md file for documentation')
 
     args = parser.parse_args()
 
@@ -102,7 +114,7 @@ def main() -> None:
         app_module, app_var = args.app.split(':')
         app = getattr(__import__(app_module, fromlist=[app_var]), app_var)
 
-        generate_postman_collection(app, args.output, args.name, args.host)
+        generate_postman_collection(app, args.output, args.name, args.host, args.readme)
     except Exception as e:
         logger.error(f"Error importing FastAPI app from {args.app}: {e}")
 

@@ -1,0 +1,399 @@
+{
+    "info": {
+        "name": "Test API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": "# fast-man\n\n[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)\n\nFast-Man is a project that aims to automate the creation of `postman_collection.json` for a FastAPI app. This tool simplifies the process of generating Postman collections, making it easier to test and document your FastAPI APIs.\n\n## Table of Contents\n\n- [Features](#features)\n- [Installation](#installation)\n- [Usage](#usage)\n  - [Command-Line Arguments](#command-line-arguments)\n- [Example](#example)\n- [Project Structure](#project-structure)\n- [License](#license)\n- [Contributing](#contributing)\n- [Contact](#contact)\n- [Acknowledgements](#acknowledgements)\n\n## Features\n\n- **Automated Postman Collection Generation**: Automatically generate a Postman collection from your FastAPI app.\n- **Customizable Output**: Specify the output file name, collection name, and host URL.\n- **Bearer Token Authentication**: Supports bearer token authentication for secure API testing.\n- **Detailed Route Information**: Includes request headers, body, parameters, and responses in the generated collection.\n\n## Installation\n\nYou can install `fast-man` using pip:\n\n```bash\npip install fast-man\n```\n\n## Usage\n\nTo generate a Postman collection, use the `fast-man` command-line tool. You need to provide the path to your FastAPI app, and you can optionally specify the output file, collection name, and host URL.\n\n```bash\nfast-man --app core.main:app --output postman_collection.json --name \"test-api\" --host \"http://test.com:8000/api/v1\" --readme \"README.md\"\n```\n\n### Command-Line Arguments\n\n- `--app`: The path to the FastAPI app instance (required).\n- `--output`: The output file name for the Postman collection (default: `postman_collection.json`).\n- `--name`: The name of the Postman collection (default: `API Collection`).\n- `--host`: The host URL for the API (default: `http://localhost`).\n- `--readme`: The path to the README.md file (default: `README.md`).\n\n> Note: If you want a custom documentation to be displayed\n> in the Postman collection other than your project's README.md, you can use the `--readme` flag.\n\n## Example\n\nHere is an example of how to use `fast-man`.\n\nGiven the project structure:\n\n```\nmy-project/\n\u251c\u2500\u2500 core/\n\u2502   \u251c\u2500\u2500 main.py\n\u251c\u2500\u2500 tests/\n\u2502   \u251c\u2500\u2500 test_main.py\n\u251c\u2500\u2500 README.md\n```\n\nYou can generate the Postman collection using the following command at root:\n\n```bash\nexport PYTHONPATH=$(pwd)\npip install fastapi pydantic requests numpy==1.26.4\npip install -e /Users/renzof/Documents/GitHub/fast-man\nfast-man --app core.main:app --output postman_collection.json --name \"test-api\" --host \"http://test.com:8000/api/v1\" --readme \"README.md\"\n```\n\n## Project Structure\n\nThe project is structured as follows:\n\n- `fast_man/`: Contains the main code for the `fast-man` tool.\n  - `__init__.py`: Initializes the package.\n  - `converter.py`: Contains the logic for generating the Postman collection.\n  - `utils.py`: Utility functions used by the converter.\n- `tests/`: Contains tests for the `fast-man` tool.\n  - `test_converter.py`: Tests for the converter module.\n- `setup.py`: Setup script for packaging the project.\n- `LICENSE`: License file for the project.\n- `.gitignore`: Git ignore file to exclude unnecessary files from version control.\n\n## License\n\nThis project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.\n\n## Contributing\n\nContributions are welcomed! Please open an issue or submit a pull request on GitHub; or just get in [contact](#contact).\n\n## Contact\n\nFor any questions or issues, please contact Renzo Franceschini at [rennf93@gmail.com].\n\n## Acknowledgements\n\nSpecial thanks to the FastAPI and Pydantic communities for their excellent libraries and documentation."
+    },
+    "item": [
+        {
+            "name": "Items",
+            "item": [
+                {
+                    "name": "read_item",
+                    "request": {
+                        "url": "http://testserver/items/{item_id}",
+                        "method": "GET",
+                        "description": "Get an item",
+                        "header": [
+                            {
+                                "key": "user_agent",
+                                "value": "{{user_agent}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": {}
+                        },
+                        "params": [
+                            {
+                                "name": "q",
+                                "in": "query",
+                                "required": false,
+                                "schema": {
+                                    "type": "Optional",
+                                    "description": "Query string for the item",
+                                    "default": "",
+                                    "example": ""
+                                }
+                            },
+                            {
+                                "name": "item_id",
+                                "in": "path",
+                                "required": true,
+                                "schema": {
+                                    "type": "int",
+                                    "description": "The ID of the item to retrieve",
+                                    "default": null,
+                                    "example": ""
+                                }
+                            }
+                        ],
+                        "responses": {
+                            "200": {
+                                "description": "Successful Response",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "name": {
+                                                    "title": "Name",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "null"
+                                                        }
+                                                    ],
+                                                    "default": null,
+                                                    "title": "Description"
+                                                },
+                                                "id": {
+                                                    "title": "Id",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "id"
+                                            ],
+                                            "title": "ResponseItem",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "404": {
+                                "description": "Item not found",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "detail": {
+                                                    "title": "Detail",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "detail"
+                                            ],
+                                            "title": "ErrorResponse",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "create_item",
+                    "request": {
+                        "url": "http://testserver/items/",
+                        "method": "POST",
+                        "description": "Create an item",
+                        "header": [
+                            {
+                                "key": "authorization",
+                                "value": "{{authorization}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": {
+                                "name": "Example item",
+                                "description": "Example description"
+                            }
+                        },
+                        "params": [],
+                        "responses": {
+                            "201": {
+                                "description": "Successful Response",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "name": {
+                                                    "title": "Name",
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "anyOf": [
+                                                        {
+                                                            "type": "string"
+                                                        },
+                                                        {
+                                                            "type": "null"
+                                                        }
+                                                    ],
+                                                    "default": null,
+                                                    "title": "Description"
+                                                },
+                                                "id": {
+                                                    "title": "Id",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "id"
+                                            ],
+                                            "title": "ResponseItem",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "401": {
+                                "description": "Unauthorized",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "detail": {
+                                                    "title": "Detail",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "detail"
+                                            ],
+                                            "title": "ErrorResponse",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "login",
+                    "request": {
+                        "url": "http://testserver/token",
+                        "method": "POST",
+                        "description": "Get a token",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": {}
+                        },
+                        "params": [],
+                        "responses": {
+                            "200": {
+                                "description": "Successful Response",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "title": "Access Token",
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "title": "Token Type",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "access_token",
+                                                "token_type"
+                                            ],
+                                            "title": "Token",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "400": {
+                                "description": "Invalid credentials",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "detail": {
+                                                    "title": "Detail",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "detail"
+                                            ],
+                                            "title": "ErrorResponse",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "read_users_me",
+                    "request": {
+                        "url": "http://testserver/users/me",
+                        "method": "GET",
+                        "description": "Get current user",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": {}
+                        },
+                        "params": [],
+                        "responses": {
+                            "200": {
+                                "description": "Successful Response",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "username": {
+                                                    "title": "Username",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "title": "Email",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "username",
+                                                "email"
+                                            ],
+                                            "title": "User",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "401": {
+                                "description": "Unauthorized",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "detail": {
+                                                    "title": "Detail",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "detail"
+                                            ],
+                                            "title": "ErrorResponse",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Secure",
+            "item": [
+                {
+                    "name": "get_secure_data",
+                    "request": {
+                        "url": "http://testserver/secure-data",
+                        "method": "GET",
+                        "description": "Get secure data",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": {}
+                        },
+                        "params": [],
+                        "responses": {
+                            "200": {
+                                "description": "Successful Response",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "data": {
+                                                    "title": "Data",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ],
+                                            "title": "SecureData",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            },
+                            "403": {
+                                "description": "Forbidden",
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "properties": {
+                                                "detail": {
+                                                    "title": "Detail",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "detail"
+                                            ],
+                                            "title": "ErrorResponse",
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{access_token}}",
+                "type": "string"
+            }
+        ]
+    }
+}
