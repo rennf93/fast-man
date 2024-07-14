@@ -1,4 +1,8 @@
 from setuptools import setup, find_packages
+import pathlib
+
+HERE = pathlib.Path(__file__).parent
+README = (HERE / "README.md").read_text()
 
 setup(
     name='fast-man',
@@ -20,4 +24,6 @@ setup(
         'Operating System :: OS Independent',
     ],
     python_requires='>=3.10',
+    long_description=README,
+    long_description_content_type='text/markdown',
 )
