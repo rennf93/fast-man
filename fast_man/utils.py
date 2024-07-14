@@ -6,14 +6,12 @@ from pydantic import BaseModel
 import logging
 import traceback
 
-
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-
-def get_request_body_example(route: APIRoute) -> Dict[str, Any]:
+def get_request_body_example(
+    route: APIRoute
+) -> Dict[str, Any]:
     """
     Get the example request body for a given route.
 
@@ -27,9 +25,12 @@ def get_request_body_example(route: APIRoute) -> Dict[str, Any]:
         if route.body_field:
             if issubclass(route.body_field.type_, BaseModel):
                 if route.body_field.field_info.examples:
-                    example = next(iter(route.body_field.field_info.examples.values())).get('value', {})
+                    example = next(
+                        iter(route.body_field.field_info.examples.values())
+                    ).get('value', {})
                 else:
-                    example = route.body_field.type_.model_json_schema().get('example', {})
+                    example = route.body_field.type_.model_json_schema(
+                    ).get('example', {})
                 return example
             elif isinstance(route.body_field.type_, dict):
                 return route.body_field.type_
@@ -37,12 +38,14 @@ def get_request_body_example(route: APIRoute) -> Dict[str, Any]:
                 return [route.body_field.type_[0].model_json_schema()]
         return {}
     except Exception as e:
-        logger.error(f"Error in get_request_body_example: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in get_request_body_example: {e}\n{traceback.format_exc()}"
+        )
         return {}
 
-
-
-def get_headers(route: APIRoute) -> List[Dict[str, str]]:
+def get_headers(
+    route: APIRoute
+) -> List[Dict[str, str]]:
     """
     Get the headers required for a given route.
 
@@ -55,7 +58,14 @@ def get_headers(route: APIRoute) -> List[Dict[str, str]]:
     try:
         headers = []
         for dependency in route.dependant.dependencies:
-            if isinstance(dependency.security_scopes, (APIKey, OAuth2PasswordBearer, OAuth2PasswordRequestForm)):
+            if isinstance(
+                dependency.security_scopes,
+                (
+                    APIKey,
+                    OAuth2PasswordBearer,
+                    OAuth2PasswordRequestForm
+                )
+            ):
                 headers.append({
                     "key": "Authorization",
                     "value": "Bearer {{access_token}}"
@@ -67,12 +77,14 @@ def get_headers(route: APIRoute) -> List[Dict[str, str]]:
             })
         return headers
     except Exception as e:
-        logger.error(f"Error in get_headers: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in get_headers: {e}\n{traceback.format_exc()}"
+        )
         return []
 
-
-
-def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
+def get_parameters(
+    route: APIRoute
+) -> List[Dict[str, Any]]:
     """
     Get the parameters for a given route.
 
@@ -112,8 +124,6 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"Error in get_parameters: {e}\n{traceback.format_exc()}")
         return []
-
-
 
 def get_responses(route: APIRoute) -> Dict[str, Dict[str, Any]]:
     """
