@@ -44,7 +44,7 @@ To generate a Postman collection, use the `fast-man` command-line tool. You need
 fast-man --app core.main:app --output postman_collection.json --name "test-api" --host "http://test.com:8000/api/v1" --readme "README.md"
 ```
 
-### Command-Line Arguments
+### Using Command-Line Arguments
 
 - `--app`: The path to the FastAPI app instance (required).
 - `--output`: The output file name for the Postman collection (default: `postman_collection.json`).
@@ -54,6 +54,35 @@ fast-man --app core.main:app --output postman_collection.json --name "test-api" 
 
 > Note: If you want a custom documentation to be displayed
 > in the Postman collection other than your project's README.md, you can use the `--readme` flag.
+
+### Using in a Script
+
+You can also use `fast-man` directly in your Python code. Here is an example:
+
+```python
+from fast_man.converter import generate_postman_collection
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int):
+    return {"item_id": item_id}
+
+@app.post("/items/")
+async def create_item(name: str):
+    return {"name": name}
+
+generate_postman_collection(
+    app=app,
+    output_file='postman_collection.json',
+    input_name='My API',
+    input_host='http://localhost:8000',
+    readme_file='README.md'
+)
+
+print("Postman collection generated successfully.")
+```
 
 ## Example
 
