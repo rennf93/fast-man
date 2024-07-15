@@ -13,12 +13,14 @@ Fast-Man is a project that aims to automate the creation of `postman_collection.
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Command-Line Arguments](#command-line-arguments)
+  - [Using Command-Line Arguments](#using-command-line-arguments)
+  - [Using in a Script](#using-in-a-script)
 - [Example](#example)
 - [Project Structure](#project-structure)
 - [License](#license)
 - [Contributing](#contributing)
 - [Contact](#contact)
+- [Funding](#funding)
 - [Acknowledgements](#acknowledgements)
 
 ## Features
@@ -41,7 +43,11 @@ pip install fast-man
 To generate a Postman collection, use the `fast-man` command-line tool. You need to provide the path to your FastAPI app, and you can optionally specify the output file, collection name, and host URL.
 
 ```bash
-fast-man --app core.main:app --output postman_collection.json --name "test-api" --host "http://test.com:8000/api/v1" --readme "README.md"
+fast-man --app core.main:app \
+--output postman_collection.json \
+--name "test-api" \
+--host "http://test.com:8000/api/v1" \
+--readme "README.md"
 ```
 
 ### Using Command-Line Arguments
@@ -76,7 +82,7 @@ async def create_item(name: str):
 generate_postman_collection(
     app=app,
     output_file='postman_collection.json',
-    input_name='My API',
+    input_name='test-api',
     input_host='http://localhost:8000',
     readme_file='README.md'
 )
@@ -103,7 +109,7 @@ You can generate the Postman collection using the following command at root:
 
 ```bash
 export PYTHONPATH=$(pwd)
-pip install fastapi pydantic requests numpy==1.26.4
+pip install fastapi pydantic requests numpy
 pip install -e /Users/renzof/Documents/GitHub/fast-man
 fast-man --app core.main:app --output postman_collection.json --name "test-api" --host "http://test.com:8000/api/v1" --readme "README.md"
 ```
@@ -133,6 +139,13 @@ Contributions are welcomed! Please open an issue or submit a pull request on Git
 ## Contact
 
 For any questions or issues, please contact Renzo Franceschini at [rennf93@gmail.com].
+
+## Funding
+
+If you find this project useful, please consider supporting its development by making a donation. Your support is greatly appreciated!
+
+- [GitHub Sponsors](https://github.com/sponsors/rennf93)
+- [Paypal](https://paypal.me/renzof93)
 
 ## Acknowledgements
 
