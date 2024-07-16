@@ -150,3 +150,10 @@ If you find this project useful, please consider supporting its development by m
 ## Acknowledgements
 
 Special thanks to the FastAPI and Pydantic communities for their excellent libraries and documentation.
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [FastAPI - Main class](https://fastapi.tiangolo.com/reference/fastapi/)
+- [FastAPI - APIRouter](https://fastapi.tiangolo.com/reference/apirouter/?h=post#fastapi.APIRouter.post)
+- [Pydantic](https://docs.pydantic.dev/latest/)
+- [Pydantic - BaseModel](https://docs.pydantic.dev/latest/latest/concepts/basemodel/)
+- [Pydantic - Field](https://docs.pydantic.dev/latest/latest/concepts/fields/)

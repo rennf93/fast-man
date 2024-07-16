@@ -99,7 +99,10 @@ def get_current_user(
     token: str = Depends(oauth2_scheme)
 ) -> User:
     if token == "fake-token":
-        return User(username="john", email="john@example.com")
+        return User(
+            username="john",
+            email="john@example.com"
+        )
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid token",
