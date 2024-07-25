@@ -23,44 +23,86 @@ import pytest
 from typing import Optional
 
 # Security schemes
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-api_key_scheme = APIKeyHeader(name="X-API-Key")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="token"
+)
+api_key_scheme = APIKeyHeader(
+    name="X-API-Key"
+)
 
 
 # Models
 class Item(BaseModel):
-    name: str = Field(..., json_schema_extra="Item name")
-    description: Optional[str] = Field(None, json_schema_extra="Item description")
+    name: str = Field(
+        ...,
+        json_schema_extra="Item name"
+    )
+    description: Optional[str] = Field(
+        None,
+        json_schema_extra="Item description"
+    )
 
 
 class ResponseItem(BaseModel):
-    name: str = Field(..., json_schema_extra="Item name")
-    description: Optional[str] = Field(None, json_schema_extra="Item description")
-    id: int = Field(..., json_schema_extra=1)
+    name: str = Field(
+        ...,
+        json_schema_extra="Item name"
+    )
+    description: Optional[str] = Field(
+        None,
+        json_schema_extra="Item description"
+    )
+    id: int = Field(
+        ...,
+        json_schema_extra=1
+    )
 
 
 class ErrorResponse(BaseModel):
-    detail: str = Field(..., json_schema_extra="Error detail")
+    detail: str = Field(
+        ...,
+        json_schema_extra="Error detail"
+    )
 
 
 class User(BaseModel):
-    username: str = Field(..., json_schema_extra="john")
-    email: str = Field(..., json_schema_extra="john@example.com")
+    username: str = Field(
+        ...,
+        json_schema_extra="john"
+    )
+    email: str = Field(
+        ...,
+        json_schema_extra="john@example.com"
+    )
 
 
 class Token(BaseModel):
-    access_token: str = Field(..., json_schema_extra="fake-token")
-    token_type: str = Field(..., json_schema_extra="bearer")
+    access_token: str = Field(
+        ...,
+        json_schema_extra="fake-token"
+    )
+    token_type: str = Field(
+        ...,
+        json_schema_extra="bearer"
+    )
 
 
 class SecureData(BaseModel):
-    data: str = Field(..., json_schema_extra="This is secure data")
+    data: str = Field(
+        ...,
+        json_schema_extra="This is secure data"
+    )
 
 
 # Dependencies
-def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+def get_current_user(
+    token: str = Depends(oauth2_scheme)
+) -> User:
     if token == "fake-token":
-        return User(username="john", email="john@example.com")
+        return User(
+            username="john",
+            email="john@example.com"
+        )
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid token",
@@ -68,7 +110,9 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     )
 
 
-def get_api_key(api_key: str = Security(api_key_scheme)) -> str:
+def get_api_key(
+    api_key: str = Security(api_key_scheme)
+) -> str:
     if api_key == "fake-api-key":
         return api_key
     raise HTTPException(
@@ -100,14 +144,28 @@ def app():
         },
     )
     async def read_item(
-        item_id: int = Path(..., description="The ID of the item to retrieve"),
-        q: Optional[str] = Query(None, description="Query string for the item"),
-        user_agent: Optional[str] = Header(None, description="User-Agent header"),
-        cookie_id: Optional[str] = Cookie(None, description="Cookie ID"),
+        item_id: int = Path(
+            ...,
+            description="The ID of the item to retrieve"
+        ),
+        q: Optional[str] = Query(
+            None,
+            description="Query string for the item"
+        ),
+        user_agent: Optional[str] = Header(
+            None,
+            description="User-Agent header"
+        ),
+        cookie_id: Optional[str] = Cookie(
+            None,
+            description="Cookie ID"
+        ),
     ) -> ResponseItem:
         if item_id == 1:
             return ResponseItem(
-                id=item_id, name="Item name", description="Item description"
+                id=item_id,
+                name="Item name",
+                description="Item description"
             )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -145,7 +203,10 @@ def app():
                 }
             },
         ),
-        authorization: Optional[str] = Header(None, description="Authorization token"),
+        authorization: Optional[str] = Header(
+            None,
+            description="Authorization token"
+        ),
     ) -> ResponseItem:
         if authorization != "Bearer test-token":
             raise HTTPException(
@@ -153,7 +214,9 @@ def app():
                 detail="Unauthorized",
                 response_model=ErrorResponse,
             )
-        return ResponseItem(id=1, **item.model_dump())
+        return ResponseItem(
+            id=1, **item.model_dump()
+        )
 
     @app.post(
         path="/token",
@@ -162,16 +225,24 @@ def app():
         status_code=status.HTTP_200_OK,
         tags=["Auth"],
         responses={
-            status.HTTP_200_OK: {"description": "Successful Response", "model": Token},
+            status.HTTP_200_OK: {
+                "description": "Successful Response",
+                "model": Token,
+            },
             status.HTTP_400_BAD_REQUEST: {
                 "description": "Invalid credentials",
                 "model": ErrorResponse,
             },
         },
     )
-    async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+    async def login(
+        form_data: OAuth2PasswordRequestForm = Depends()
+    ) -> Token:
         if form_data.username == "john" and form_data.password == "secret":
-            return Token(access_token="fake-token", token_type="bearer")
+            return Token(
+                access_token="fake-token",
+                token_type="bearer",
+            )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid credentials",
@@ -184,16 +255,27 @@ def app():
         response_model=User,
         status_code=status.HTTP_200_OK,
         tags=["Users"],
-        dependencies=[Depends(get_current_user)],
+        dependencies=[
+            Depends(
+                get_current_user
+            )
+        ],
         responses={
-            status.HTTP_200_OK: {"description": "Successful Response", "model": User},
+            status.HTTP_200_OK: {
+                "description": "Successful Response",
+                "model": User,
+            },
             status.HTTP_401_UNAUTHORIZED: {
                 "description": "Unauthorized",
                 "model": ErrorResponse,
             },
         },
     )
-    async def read_users_me(current_user: User = Depends(get_current_user)) -> User:
+    async def read_users_me(
+        current_user: User = Depends(
+            get_current_user
+        )
+    ) -> User:
         return current_user
 
     @app.get(
@@ -202,7 +284,11 @@ def app():
         response_model=SecureData,
         status_code=status.HTTP_200_OK,
         tags=["Secure"],
-        dependencies=[Security(get_api_key)],
+        dependencies=[
+            Security(
+                get_api_key
+            )
+        ],
         responses={
             status.HTTP_200_OK: {
                 "description": "Successful Response",
@@ -214,8 +300,14 @@ def app():
             },
         },
     )
-    async def get_secure_data(api_key: str = Security(get_api_key)) -> SecureData:
-        return SecureData(data="This is secure data")
+    async def get_secure_data(
+        api_key: str = Security(
+            get_api_key
+        )
+    ) -> SecureData:
+        return SecureData(
+            data="This is secure data"
+        )
 
     return app
 
@@ -225,28 +317,44 @@ def client(app):
     return TestClient(app)
 
 
-def test_generate_postman_collection(app, client):
+def test_generate_postman_collection(
+    app,
+    client
+):
     output_file = "postman_collection.json"
-    generate_postman_collection(app, str(output_file), "Test API", "http://testserver")
+    generate_postman_collection(
+        app,
+        str(output_file),
+        "Test API",
+        "http://testserver"
+    )
 
     with open(output_file) as f:
         collection = json.load(f)
 
-    schema = "https://schema.getpostman.com/json/collection/v2.1.0/" "collection.json"
+    schema = (
+        "https://schema.getpostman.com/json/collection/v2.1.0/"
+        "collection.json"
+    )
 
     assert collection["info"]["name"] == "Test API"
     assert collection["info"]["schema"] == schema
     assert "item" in collection
     assert len(collection["item"]) > 0
 
-    folder_names = [folder["name"] for folder in collection["item"]]
+    folder_names = [
+        folder["name"]
+        for folder in collection["item"]
+    ]
     assert "Items" in folder_names
     assert "Auth" in folder_names
     assert "Users" in folder_names
     assert "Secure" in folder_names
 
     items_folder = next(
-        folder for folder in collection["item"] if folder["name"] == "Items"
+        folder
+        for folder in collection["item"]
+        if folder["name"] == "Items"
     )
     assert len(items_folder["item"]) == 2
 
@@ -258,11 +366,17 @@ def test_generate_postman_collection(app, client):
     assert get_item["request"]["method"] == "GET"
     assert get_item["request"]["description"] == "Get an item"
     assert get_item["request"]["header"] == [
-        {"key": "user_agent", "value": "{{user_agent}}"}
+        {
+            "key": "user_agent",
+            "value": "{{user_agent}}",
+        }
     ]
     assert get_item["request"]["body"]["mode"] == "raw"
     assert get_item["request"]["body"]["raw"] == {}
-    assert sorted(get_item["request"]["params"], key=lambda x: x["name"]) == sorted(
+    assert sorted(
+        get_item["request"]["params"],
+        key=lambda x: x["name"]
+    ) == sorted(
         [
             {
                 "name": "item_id",
@@ -309,10 +423,19 @@ def test_generate_postman_collection(app, client):
                                 "default": None,
                                 "title": "Description",
                             },
-                            "id": {"title": "Id", "type": "integer"},
-                            "name": {"title": "Name", "type": "string"},
+                            "id": {
+                                "title": "Id",
+                                "type": "integer"
+                            },
+                            "name": {
+                                "title": "Name",
+                                "type": "string",
+                            },
                         },
-                        "required": ["name", "id"],
+                        "required": [
+                            "name",
+                            "id"
+                        ],
                         "title": "ResponseItem",
                     }
                 }
@@ -324,7 +447,12 @@ def test_generate_postman_collection(app, client):
                 "application/json": {
                     "schema": {
                         "type": "object",
-                        "properties": {"detail": {"title": "Detail", "type": "string"}},
+                        "properties": {
+                            "detail": {
+                                "title": "Detail",
+                                "type": "string",
+                            }
+                        },
                         "required": ["detail"],
                         "title": "ErrorResponse",
                     }
@@ -341,7 +469,10 @@ def test_generate_postman_collection(app, client):
     assert create_item["request"]["method"] == "POST"
     assert create_item["request"]["description"] == "Create an item"
     assert create_item["request"]["header"] == [
-        {"key": "authorization", "value": "{{authorization}}"}
+        {
+            "key": "authorization",
+            "value": "{{authorization}}",
+        }
     ]
     assert create_item["request"]["body"]["mode"] == "raw"
     assert create_item["request"]["body"]["raw"] == {
@@ -369,10 +500,19 @@ def test_generate_postman_collection(app, client):
                                 "default": None,
                                 "title": "Description",
                             },
-                            "id": {"title": "Id", "type": "integer"},
-                            "name": {"title": "Name", "type": "string"},
+                            "id": {
+                                "title": "Id",
+                                "type": "integer",
+                            },
+                            "name": {
+                                "title": "Name",
+                                "type": "string",
+                            },
                         },
-                        "required": ["name", "id"],
+                        "required": [
+                            "name",
+                            "id"
+                        ],
                         "title": "ResponseItem",
                     }
                 }
@@ -384,7 +524,12 @@ def test_generate_postman_collection(app, client):
                 "application/json": {
                     "schema": {
                         "type": "object",
-                        "properties": {"detail": {"title": "Detail", "type": "string"}},
+                        "properties": {
+                            "detail": {
+                                "title": "Detail",
+                                "type": "string",
+                            }
+                        },
                         "required": ["detail"],
                         "title": "ErrorResponse",
                     }
@@ -394,7 +539,13 @@ def test_generate_postman_collection(app, client):
     }
 
     response = client.get(
-        "/items/1", headers={"user_agent": "test-agent"}, params={"q": "test-query"}
+        "/items/1",
+        headers={
+            "user_agent": "test-agent"
+        },
+        params={
+            "q": "test-query"
+        },
     )
     assert response.status_code == 200
     assert response.json() == {
@@ -405,8 +556,13 @@ def test_generate_postman_collection(app, client):
 
     response = client.post(
         "/items/",
-        json={"name": "test", "description": "test description"},
-        headers={"authorization": "Bearer test-token"},
+        json={
+            "name": "test",
+            "description": "test description"
+        },
+        headers={
+            "authorization": "Bearer test-token",
+        },
     )
     assert response.status_code == 201
     assert response.json() == {
@@ -416,10 +572,16 @@ def test_generate_postman_collection(app, client):
     }
 
 
-def test_generate_postman_collection_with_auth(app, client):
+def test_generate_postman_collection_with_auth(
+    app,
+    client
+):
     output_file = "postman_collection_with_auth.json"
     generate_postman_collection(
-        app, str(output_file), "Test API with Auth", "http://testserver"
+        app,
+        str(output_file),
+        "Test API with Auth",
+        "http://testserver"
     )
 
     with open(output_file) as f:
@@ -430,19 +592,27 @@ def test_generate_postman_collection_with_auth(app, client):
     assert collection["auth"]["bearer"][0]["value"] == "{{access_token}}"
     assert collection["auth"]["bearer"][0]["type"] == "string"
 
-    folder_names = [folder["name"] for folder in collection["item"]]
+    folder_names = [
+        folder["name"]
+        for folder in collection["item"]
+    ]
     assert "Items" in folder_names
     assert "Auth" in folder_names
     assert "Users" in folder_names
     assert "Secure" in folder_names
 
     items_folder = next(
-        folder for folder in collection["item"] if folder["name"] == "Items"
+        folder
+        for folder in collection["item"]
+        if folder["name"] == "Items"
     )
     assert len(items_folder["item"]) == 2
 
     get_item = items_folder["item"][0]
-    assert sorted(get_item["request"]["params"], key=lambda x: x["name"]) == sorted(
+    assert sorted(
+        get_item["request"]["params"],
+        key=lambda x: x["name"],
+    ) == sorted(
         [
             {
                 "name": "item_id",
@@ -470,7 +640,12 @@ def test_generate_postman_collection_with_auth(app, client):
         key=lambda x: x["name"],
     )
 
-    response = client.get("/items/1", headers={"Authorization": "Bearer test-token"})
+    response = client.get(
+        "/items/1",
+        headers={
+            "Authorization": "Bearer test-token"
+        },
+    )
     assert response.status_code == 200
     assert response.json() == {
         "id": 1,
@@ -480,8 +655,13 @@ def test_generate_postman_collection_with_auth(app, client):
 
     response = client.post(
         "/items/",
-        json={"name": "test", "description": "test description"},
-        headers={"Authorization": "Bearer test-token"},
+        json={
+            "name": "test",
+            "description": "test description",
+        },
+        headers={
+            "Authorization": "Bearer test-token",
+        },
     )
     assert response.status_code == 201
     assert response.json() == {
