@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - chore/enhance-fomatting
+      - master
   pull_request_target:
     branches:
-      - chore/enhance-fomatting
+      - master
 
 jobs:
   test:
