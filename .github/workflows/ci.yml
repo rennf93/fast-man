@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - chore/enhance-fomatting
-  pull_request:
+  pull_request_target:
     branches:
       - chore/enhance-fomatting
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
 
     strategy:
       matrix:
