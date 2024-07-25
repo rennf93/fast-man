@@ -59,16 +59,30 @@ def get_headers(route: APIRoute) -> List[Dict[str, str]]:
         for dependency in route.dependant.dependencies:
             if isinstance(
                 dependency.security_scopes,
-                (APIKey, OAuth2PasswordBearer, OAuth2PasswordRequestForm),
+                (
+                    APIKey,
+                    OAuth2PasswordBearer,
+                    OAuth2PasswordRequestForm,
+                ),
             ):
                 headers.append(
-                    {"key": "Authorization", "value": "Bearer {{access_token}}"}
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{access_token}}",
+                    }
                 )
         for param in route.dependant.header_params:
-            headers.append({"key": param.name, "value": f"{{{{{param.name}}}}}"})
+            headers.append(
+                {
+                    "key": param.name,
+                    "value": f"{{{{{param.name}}}}}",
+                }
+            )
         return headers
     except Exception as e:
-        logger.error(f"Error in get_headers: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in get_headers: {e}\n{traceback.format_exc()}"
+        )
         return []
 
 
@@ -77,10 +91,12 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
     Get the parameters for a given route.
 
     Args:
-        route (APIRoute): The route to get the parameters for.
+        route (APIRoute):
+        The route to get the parameters for.
 
     Returns:
-        List[Dict[str, Any]]: The list of parameters.
+        List[Dict[str, Any]]:
+        The list of parameters.
     """
     try:
         parameters = []
@@ -93,7 +109,10 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                     "schema": {
                         "type": (
                             param.type_.__name__
-                            if hasattr(param.type_, "__name__")
+                            if hasattr(
+                                param.type_,
+                                "__name__"
+                            )
                             else str(param.type_)
                         ),
                         "description": (
@@ -101,10 +120,19 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                             if param.field_info.description
                             else ""
                         ),
-                        "default": (param.default if param.default is not None else ""),
+                        "default": (
+                            param.default
+                            if param.default is not None
+                            else ""
+                        ),
                         "example": (
-                            param.field_info.extra.get("example", "")
-                            if hasattr(param.field_info, "extra")
+                            param.field_info.extra.get(
+                                "example", ""
+                            )
+                            if hasattr(
+                                param.field_info,
+                                "extra"
+                            )
                             else ""
                         ),
                     },
@@ -119,7 +147,10 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                     "schema": {
                         "type": (
                             param.type_.__name__
-                            if hasattr(param.type_, "__name__")
+                            if hasattr(
+                                param.type_,
+                                "__name__"
+                            )
                             else str(param.type_)
                         ),
                         "description": (
@@ -127,10 +158,20 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                             if param.field_info.description
                             else ""
                         ),
-                        "default": (param.default if param.default is not None else ""),
+                        "default": (
+                            param.default
+                            if param.default is not None
+                            else ""
+                        ),
                         "example": (
-                            param.field_info.extra.get("example", "")
-                            if hasattr(param.field_info, "extra")
+                            param.field_info.extra.get(
+                                "example",
+                                ""
+                            )
+                            if hasattr(
+                                param.field_info,
+                                "extra"
+                            )
                             else ""
                         ),
                     },
@@ -138,7 +179,9 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
             )
         return parameters
     except Exception as e:
-        logger.error(f"Error in get_parameters: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in get_parameters: {e}\n{traceback.format_exc()}"
+        )
         return []
 
 
@@ -165,26 +208,44 @@ def get_responses(route: APIRoute) -> Dict[str, Dict[str, Any]]:
                     if not content and "model" in response:
                         content = response["model"].model_json_schema()
                     responses[str(status_code)] = {
-                        "description": response.get("description", ""),
-                        "content": {"application/json": {"schema": content}},
+                        "description": response.get(
+                            "description",
+                            ""
+                        ),
+                        "content": {
+                            "application/json": {
+                                "schema": content
+                            }
+                        },
                     }
                 elif isinstance(response, BaseModel):
                     responses[str(status_code)] = {
                         "description": response.__doc__,
                         "content": {
-                            "application/json": {"schema": response.model_json_schema()}
+                            "application/json": {
+                                "schema": response.model_json_schema()
+                            }
                         },
                     }
         elif route.response_model:
             if isinstance(route.response_model, list):
-                schema = [model.model_json_schema() for model in route.response_model]
+                schema = [
+                    model.model_json_schema()
+                    for model in route.response_model
+                ]
             else:
                 schema = route.response_model.model_json_schema()
             responses[str(route.status_code)] = {
                 "description": route.response_model.__doc__,
-                "content": {"application/json": {"schema": schema}},
+                "content": {
+                    "application/json": {
+                        "schema": schema
+                    }
+                },
             }
         return responses
     except Exception as e:
-        logger.error(f"Error in get_responses: {e}\n{traceback.format_exc()}")
+        logger.error(
+            f"Error in get_responses: {e}\n{traceback.format_exc()}"
+        )
         return {}
