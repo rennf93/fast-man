@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - master
-  pull_request:
+  pull_request_target:
     branches:
       - master
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
 
     strategy:
       matrix:
@@ -40,3 +43,8 @@ jobs:
         run: |
           pip install flake8
           flake8 .
+
+      - name: Format code with black
+        run: |
+          pip install black
+          black .
