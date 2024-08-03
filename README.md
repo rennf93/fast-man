@@ -108,9 +108,8 @@ my-project/
 You can generate the Postman collection using the following command at root:
 
 ```bash
+pip install fast-man
 export PYTHONPATH=$(pwd)
-pip install fastapi pydantic requests numpy
-pip install -e /Users/renzof/Documents/GitHub/fast-man
 fast-man --app core.main:app --output postman_collection.json --name "test-api" --host "http://test.com:8000/api/v1" --readme "README.md"
 ```
 
