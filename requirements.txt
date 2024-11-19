@@ -25,7 +25,7 @@ MarkupSafe==2.1.5
 mdurl==0.1.2
 more-itertools==10.5.0
 nh3==0.2.18
-packaging==24.1
+packaging==24.2
 pkginfo==1.10.0
 pluggy==1.5.0
 pydantic==2.9.2
