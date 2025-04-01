@@ -33,7 +33,7 @@ pydantic==2.10.6
 pydantic_core==2.32.0
 Pygments==2.19.1
 pytest==8.3.5
-python-dotenv==1.0.1
+python-dotenv==1.1.0
 python-multipart==0.0.20
 PyYAML==6.0.2
 readme_renderer==44.0
