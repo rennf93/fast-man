@@ -29,7 +29,7 @@ nh3==0.2.21
 packaging==24.2
 pkginfo==1.12.1.2
 pluggy==1.5.0
-pydantic==2.10.6
+pydantic==2.11.3
 pydantic_core==2.32.0
 Pygments==2.19.1
 pytest==8.3.5
