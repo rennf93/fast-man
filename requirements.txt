@@ -50,7 +50,7 @@ twine==6.1.0
 typer==0.15.2
 typing_extensions==4.12.2
 urllib3==2.3.0
-uvicorn==0.34.0
+uvicorn==0.34.2
 uvloop==0.21.0
 watchfiles==1.0.4
 websockets==15.0.1
