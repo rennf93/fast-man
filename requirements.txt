@@ -24,7 +24,7 @@ keyring==25.6.0
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
-more-itertools==10.6.0
+more-itertools==10.7.0
 nh3==0.2.21
 packaging==24.2
 pkginfo==1.12.1.2
