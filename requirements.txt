@@ -55,4 +55,4 @@ uvloop==0.21.0
 watchfiles==1.0.4
 websockets==15.0.1
 wheel==0.45.1
-zipp==3.21.0
+zipp==3.23.0
