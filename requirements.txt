@@ -37,7 +37,7 @@ python-dotenv==1.1.1
 python-multipart==0.0.20
 PyYAML==6.0.2
 readme_renderer==44.0
-requests==2.32.3
+requests==2.32.5
 requests-toolbelt==1.0.0
 rfc3986==2.0.0
 rich==14.0.0
