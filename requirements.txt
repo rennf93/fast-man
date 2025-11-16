@@ -49,7 +49,7 @@ starlette==0.47.2
 twine==6.2.0
 typer==0.16.0
 typing_extensions==4.15.0
-urllib3==2.4.0
+urllib3==2.5.0
 uvicorn==0.37.0
 uvloop==0.21.0
 watchfiles==1.0.4
