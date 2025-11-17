@@ -4,7 +4,7 @@ certifi==2025.4.26
 click==8.2.1
 charset-normalizer==3.4.3
 dnspython==2.7.0
-docutils==0.21.2
+docutils==0.22.3
 email_validator==2.2.0
 fastapi==0.115.12
 fastapi-cli==0.0.14
