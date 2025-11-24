@@ -40,7 +40,7 @@ readme_renderer==44.0
 requests==2.32.5
 requests-toolbelt==1.0.0
 rfc3986==2.0.0
-rich==14.0.0
+rich==14.2.0
 rich-toolkit==0.14.1
 setuptools==79.0.1
 shellingham==1.5.4
