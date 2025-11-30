@@ -10,7 +10,7 @@ fastapi==0.115.12
 fastapi-cli==0.0.14
 h11==0.16.0
 httpcore==1.0.9
-httptools==0.6.4
+httptools==0.7.1
 httpx==0.28.1
 id==1.5.0
 idna==3.10
@@ -21,7 +21,7 @@ jaraco.context==6.0.1
 jaraco.functools==4.3.0
 Jinja2==3.1.6
 keyring==25.6.0
-markdown-it-py==3.0.0
+markdown-it-py==4.0.0
 MarkupSafe==3.0.3
 mdurl==0.1.2
 more-itertools==10.8.0
