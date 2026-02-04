@@ -30,7 +30,7 @@ packaging==25.0
 pkginfo==1.12.1.2
 pluggy==1.6.0
 pydantic==2.12.5
-pydantic_core==2.41.1
+pydantic_core==2.41.5
 Pygments==2.19.1
 python-dotenv==1.2.1
 pytest==9.0.2
