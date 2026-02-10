@@ -5,7 +5,7 @@ click==8.3.1
 charset-normalizer==3.4.4
 dnspython==2.7.0
 docutils==0.22.3
-email_validator==2.2.0
+email_validator==2.3.0
 fastapi==0.128.6
 fastapi-cli==0.0.20
 h11==0.16.0
