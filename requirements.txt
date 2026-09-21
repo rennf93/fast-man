@@ -27,7 +27,7 @@ mdurl==0.1.2
 more-itertools==10.8.0
 nh3==0.3.2
 packaging==25.0
-pkginfo==1.12.1.2
+pkginfo==1.13
 pluggy==1.6.0
 pydantic==2.12.5
 pydantic_core==2.49.0
