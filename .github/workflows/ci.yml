@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - master
-  pull_request_target:
+  # pull_request, not pull_request_target: the tests run on the PR's own code
+  pull_request:
     branches:
       - master
 
@@ -13,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      pull-requests: write
+      contents: read
 
     strategy:
       matrix:

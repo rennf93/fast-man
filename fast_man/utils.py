@@ -1,13 +1,18 @@
 from fastapi.routing import APIRoute
-from fastapi.openapi.models import APIKey
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security.base import SecurityBase
 from typing import List, Dict, Any
 from pydantic import BaseModel
+from pydantic_core import PydanticUndefined
 import logging
 import traceback
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def _default_of(param: Any) -> Any:
+    default = param.field_info.default
+    return None if default is PydanticUndefined else default
 
 
 def get_request_body_example(route: APIRoute) -> Dict[str, Any]:
@@ -22,20 +27,21 @@ def get_request_body_example(route: APIRoute) -> Dict[str, Any]:
     """
     try:
         if route.body_field:
-            if issubclass(route.body_field.type_, BaseModel):
+            body_type = route.body_field.field_info.annotation
+            if issubclass(body_type, BaseModel):
                 if route.body_field.field_info.examples:
                     example = next(
                         iter(route.body_field.field_info.examples.values())
                     ).get("value", {})
                 else:
-                    example = route.body_field.type_.model_json_schema().get(
+                    example = body_type.model_json_schema().get(
                         "example", {}
                     )
                 return example
-            elif isinstance(route.body_field.type_, dict):
-                return route.body_field.type_
-            elif isinstance(route.body_field.type_, list):
-                return [route.body_field.type_[0].model_json_schema()]
+            elif isinstance(body_type, dict):
+                return body_type
+            elif isinstance(body_type, list):
+                return [body_type[0].model_json_schema()]
         return {}
     except Exception as e:
         logger.error(
@@ -57,14 +63,7 @@ def get_headers(route: APIRoute) -> List[Dict[str, str]]:
     try:
         headers = []
         for dependency in route.dependant.dependencies:
-            if isinstance(
-                dependency.security_scopes,
-                (
-                    APIKey,
-                    OAuth2PasswordBearer,
-                    OAuth2PasswordRequestForm,
-                ),
-            ):
+            if isinstance(dependency.call, SecurityBase):
                 headers.append(
                     {
                         "key": "Authorization",
@@ -105,15 +104,15 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                 {
                     "name": param.name,
                     "in": "query",
-                    "required": param.required,
+                    "required": param.field_info.is_required(),
                     "schema": {
                         "type": (
-                            param.type_.__name__
+                            param.field_info.annotation.__name__
                             if hasattr(
-                                param.type_,
+                                param.field_info.annotation,
                                 "__name__"
                             )
-                            else str(param.type_)
+                            else str(param.field_info.annotation)
                         ),
                         "description": (
                             param.field_info.description
@@ -121,8 +120,8 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                             else ""
                         ),
                         "default": (
-                            param.default
-                            if param.default is not None
+                            _default_of(param)
+                            if _default_of(param) is not None
                             else ""
                         ),
                         "example": (
@@ -146,23 +145,19 @@ def get_parameters(route: APIRoute) -> List[Dict[str, Any]]:
                     "required": True,
                     "schema": {
                         "type": (
-                            param.type_.__name__
+                            param.field_info.annotation.__name__
                             if hasattr(
-                                param.type_,
+                                param.field_info.annotation,
                                 "__name__"
                             )
-                            else str(param.type_)
+                            else str(param.field_info.annotation)
                         ),
                         "description": (
                             param.field_info.description
                             if param.field_info.description
                             else ""
                         ),
-                        "default": (
-                            param.default
-                            if param.default is not None
-                            else ""
-                        ),
+                        "default": _default_of(param),
                         "example": (
                             param.field_info.extra.get(
                                 "example",
